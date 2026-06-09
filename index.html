@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopWave | TOPレーナーのウェーブガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060c08;
+  --surface: #0b1410;
+  --surface2: #111c15;
+  --border: #1a2e20;
+  --green: #2dbd6e;
+  --green-dim: #1a7a44;
+  --green-light: #6ee8a4;
+  --gold: #d4a843;
+  --gold-light: #f0cc70;
+  --red: #e05a3a;
+  --blue: #4ab3d4;
+  --purple: #9b72cf;
+  --ambessa: #c8602a;
+  --ambessa-light: #f0904a;
+  --rumble: #e8c030;
+  --rumble-light: #f8e060;
+  --text: #b8c8b0;
+  --text-dim: #5a7060;
+  --text-bright: #e8f0e0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* GRASS TEXTURE OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(ellipse 1px 1px at 20% 30%, rgba(45,189,110,0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 1px 1px at 70% 60%, rgba(45,189,110,0.04) 0%, transparent 100%),
+    radial-gradient(ellipse 1px 1px at 45% 80%, rgba(45,189,110,0.05) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(6,12,8,0.93);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+}
+
+.nav-logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.4rem;
+  color: var(--green);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-links { display: flex; gap: 0.2rem; list-style: none; }
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-btn:hover { color: var(--green); background: rgba(45,189,110,0.08); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 7rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* LANE LINES BACKGROUND */
+.hero-lane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.lane-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45,189,110,0.15), transparent);
+  width: 100%;
+}
+.lane-line:nth-child(1) { top: 30%; }
+.lane-line:nth-child(2) { top: 50%; }
+.lane-line:nth-child(3) { top: 70%; }
+
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(45,189,110,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 20% 80%, rgba(212,168,67,0.05) 0%, transparent 60%);
+}
+
+/* MINION WAVE ANIMATION */
+.minion-wave {
+  position: absolute;
+  bottom: 15%;
+  left: 0;
+  right: 0;
+  height: 32px;
+  overflow: hidden;
+  opacity: 0.4;
+}
+
+.minion {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  bottom: 6px;
+  animation: marchRight 8s linear infinite;
+}
+
+.minion:nth-child(1) { background: var(--green); left: -60px; animation-delay: 0s; }
+.minion:nth-child(2) { background: var(--green); left: -80px; animation-delay: 0.4s; }
+.minion:nth-child(3) { background: var(--green); left: -100px; animation-delay: 0.8s; }
+.minion:nth-child(4) { background: var(--green); left: -120px; animation-delay: 1.2s; width: 14px; height: 14px; }
+.minion:nth-child(5) { background: var(--green); left: -140px; animation-delay: 1.6s; }
+.minion:nth-child(6) { background: var(--green); left: -160px; animation-delay: 2s; width: 14px; height: 14px; }
+
+@keyframes marchRight {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(120vw); }
+}
+
+.hero-badge {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--green);
+  border: 1px solid var(--green-dim);
+  padding: 0.3rem 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--text-bright);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero h1 .g { color: var(--green); }
+.hero h1 .gold { color: var(--gold); }
+
+.hero-sub {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  max-width: 500px;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+/* TOC */
+.hero-toc {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 3rem;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.8s 0.3s ease both;
+  width: min(600px, 90vw);
+}
+
+.toc-btn {
+  background: var(--surface);
+  border: none;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.toc-btn:hover { background: rgba(45,189,110,0.08); }
+
+.toc-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--green);
+}
+.toc-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-bright);
+}
+
+/* SECTIONS */
+.section-wrap { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; position: relative; z-index: 1; }
+.section-alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.section-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+}
+.section-title .g { color: var(--green); }
+.section-title .gold { color: var(--gold); }
+
+.section-divider {
+  width: 50px; height: 3px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  margin-bottom: 2.5rem;
+}
+
+.lead {
+  max-width: 640px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+}
+
+/* WAVE CARDS */
+.wave-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.wave-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.wave-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+/* WAVE VISUALIZER */
+.wave-vis {
+  height: 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wave-vis-label {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* mini minion dots */
+.m { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.m-ally { background: var(--green); }
+.m-enemy { background: var(--red); }
+.m-cannon { width: 13px; height: 13px; border-radius: 2px; }
+.m-gap { width: 16px; }
+.arrow-vis { color: var(--text-dim); font-size: 0.9rem; margin: 0 4px; }
+
+.wave-body { padding: 1.4rem 1.5rem; }
+
+.wave-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.wave-en {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.how-to {
+  background: rgba(45,189,110,0.07);
+  border-left: 3px solid var(--green-dim);
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.how-to-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.25rem;
+}
+
+.how-to p { font-size: 0.85rem; color: var(--text); }
+
+.action-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+.action-list li {
+  font-size: 0.84rem;
+  color: var(--text);
+  padding-left: 1.2rem;
+  position: relative;
+}
+.action-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 0.68rem;
+  top: 0.18rem;
+}
+
+.warn-inline {
+  background: rgba(224,90,58,0.07);
+  border-left: 3px solid rgba(224,90,58,0.4);
+  padding: 0.5rem 0.8rem;
+  margin-top: 0.8rem;
+  font-size: 0.82rem;
+  color: #d08070;
+}
+.warn-inline strong {
+  color: var(--red);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+/* CHAMP TABS */
+.champ-section { margin-top: 3rem; }
+
+.champ-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.champ-tab {
+  padding: 0.7rem 1.5rem;
+  background: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  top: 1px;
+  color: var(--text-dim);
+}
+
+.champ-tab.ambessa { }
+.champ-tab.rumble { }
+
+.champ-tab.active.ambessa {
+  color: var(--ambessa-light);
+  background: var(--surface);
+  border-color: var(--border);
+  border-bottom-color: var(--surface);
+}
+.champ-tab.active.rumble {
+  color: var(--rumble-light);
+  background: var(--surface);
+  border-color: var(--border);
+  border-bottom-color: var(--surface);
+}
+.champ-tab:not(.active):hover { color: var(--text); }
+
+.champ-panel {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  padding: 2rem;
+}
+.champ-panel.active { display: block; }
+
+.champ-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.champ-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+  border: 2px solid;
+}
+
+.champ-icon.ambessa { background: rgba(200,96,42,0.15); border-color: var(--ambessa); }
+.champ-icon.rumble { background: rgba(232,192,48,0.12); border-color: var(--rumble); }
+
+.champ-info h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ambessa-name { color: var(--ambessa-light); }
+.rumble-name { color: var(--rumble-light); }
+
+.champ-info .champ-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+  max-width: 480px;
+}
+
+.champ-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.ctag {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+.ctag-orange { background: rgba(200,96,42,0.15); color: var(--ambessa-light); border: 1px solid rgba(200,96,42,0.3); }
+.ctag-yellow { background: rgba(232,192,48,0.12); color: var(--rumble-light); border: 1px solid rgba(232,192,48,0.25); }
+.ctag-green { background: rgba(45,189,110,0.1); color: var(--green); border: 1px solid rgba(45,189,110,0.2); }
+
+.wave-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ex-card {
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.ex-head {
+  padding: 0.6rem 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ex-head.ambessa { background: rgba(200,96,42,0.12); color: var(--ambessa-light); border-bottom: 1px solid rgba(200,96,42,0.2); }
+.ex-head.rumble { background: rgba(232,192,48,0.1); color: var(--rumble-light); border-bottom: 1px solid rgba(232,192,48,0.15); }
+
+.ex-body {
+  padding: 1rem;
+  background: var(--surface2);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.ex-scenario {
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+.ex-body ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+.ex-body ul li {
+  padding-left: 1.2rem;
+  position: relative;
+  font-size: 0.83rem;
+}
+.ex-body ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  font-size: 0.65rem;
+  top: 0.2rem;
+}
+.ex-body.ambessa ul li::before { color: var(--ambessa); }
+.ex-body.rumble ul li::before { color: var(--rumble); }
+
+/* OVERVIEW TABLE */
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+}
+.overview-table th {
+  background: var(--surface2);
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  border-bottom: 2px solid var(--border);
+}
+.overview-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+.overview-table tr:hover td { background: rgba(45,189,110,0.03); }
+
+.dot-good { color: var(--green); }
+.dot-warn { color: var(--gold); }
+.dot-bad { color: var(--red); }
+
+/* INFO BOXES */
+.info-box {
+  background: rgba(45,189,110,0.06);
+  border: 1px solid rgba(45,189,110,0.2);
+  border-left: 3px solid var(--green);
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+}
+.info-box strong {
+  display: block;
+  color: var(--green);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.warn-box {
+  background: rgba(224,90,58,0.06);
+  border: 1px solid rgba(224,90,58,0.2);
+  border-left: 3px solid var(--red);
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+}
+.warn-box strong {
+  display: block;
+  color: var(--red);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+/* BACK TO TOP */
+#back-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  background: var(--green);
+  border: none;
+  color: #060c08;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  clip-path: polygon(50% 0%, 100% 30%, 100% 100%, 0% 100%, 0% 30%);
+  transition: all 0.2s;
+  opacity: 0;
+  pointer-events: none;
+}
+#back-top.visible { opacity: 1; pointer-events: all; }
+#back-top:hover { background: var(--green-light); transform: translateY(-3px); }
+
+/* FOOTER */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  position: relative;
+  z-index: 1;
+}
+.footer-logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  color: var(--green);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.footer-logo span { color: var(--gold); }
+
+/* FADE ANIMATION */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.6rem; }
+  .hero-toc { grid-template-columns: repeat(2, 1fr); }
+  .champ-header { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Top<span>Wave</span></div>
+  <ul class="nav-links">
+    <li><button class="nav-btn" onclick="jumpTo('#overview')">概要</button></li>
+    <li><button class="nav-btn" onclick="jumpTo('#waves')">ウェーブ種類</button></li>
+    <li><button class="nav-btn" onclick="jumpTo('#champs')">チャンプ別</button></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-lane">
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+    <div class="lane-line"></div>
+    <div class="minion-wave">
+      <div class="m m-ally"></div>
+      <div class="m m-ally"></div>
+      <div class="m m-ally"></div>
+      <div class="m m-ally m-cannon"></div>
+      <div class="m m-ally"></div>
+      <div class="m m-ally"></div>
+    </div>
+  </div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">League of Legends · Top Lane Wave Guide</div>
+  <h1>ウェーブを<br><span class="g">支配</span>する者が<br>レーンを<span class="gold">制す</span></h1>
+  <p class="hero-sub">TOPレーナーとして知るべきウェーブの作り方と、それぞれの動き方を徹底解説。アンベッサ・ランブルの具体例つき。</p>
+
+  <div class="hero-toc">
+    <button class="toc-btn" onclick="jumpTo('#overview')">
+      <span class="toc-num">01</span>
+      <span class="toc-label">ウェーブの基本</span>
+    </button>
+    <button class="toc-btn" onclick="jumpTo('#waves')">
+      <span class="toc-num">02</span>
+      <span class="toc-label">全ウェーブ解説</span>
+    </button>
+    <button class="toc-btn" onclick="jumpTo('#champs')">
+      <span class="toc-num">03</span>
+      <span class="toc-label">チャンプ別例</span>
+    </button>
+  </div>
+</div>
+
+<!-- OVERVIEW SECTION -->
+<section id="overview">
+<div class="section-wrap">
+  <div class="section-label">Chapter 01</div>
+  <h2 class="section-title">ウェーブ管理の<span class="g">基本概念</span></h2>
+  <div class="section-divider"></div>
+  <p class="lead">ウェーブ管理とはミニオンの流れをコントロールすること。これを理解するだけでTOPレーンの動きが根本から変わる。</p>
+
+  <div class="info-box fade-in">
+    <strong>💡 なぜウェーブ管理が重要か</strong>
+    ウェーブの状態は「自分がどこにいられるか」「いつローム・リコールできるか」「いつ敵を殺せるか」すべてを決定づける。CSを取るだけでなく、ウェーブを「兵器」として使う意識を持つことがTOP上達の近道。
+  </div>
+
+  <table class="overview-table fade-in">
+    <thead>
+      <tr>
+        <th>ウェーブ状態</th>
+        <th>ミニオンの向き</th>
+        <th>自分の行動自由度</th>
+        <th>敵への圧力</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--text-bright);">スロープッシュ</strong></td>
+        <td>徐々に自分側が押す方向へ</td>
+        <td><span class="dot-good">● 高い</span>（次の行動を準備できる）</td>
+        <td><span class="dot-warn">● 中</span></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright);">フリーズ</strong></td>
+        <td>タワーから離れた場所で停滞</td>
+        <td><span class="dot-bad">● 低い</span>（離れると死ぬ）</td>
+        <td><span class="dot-good">● 高い</span>（敵がCSを取れない）</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright);">ファストプッシュ</strong></td>
+        <td>全力で敵タワーへ押し込む</td>
+        <td><span class="dot-good">● 高い</span>（リコール・ローム可）</td>
+        <td><span class="dot-bad">● 低い</span>（タワーが守ってくれる）</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--text-bright);">ウェーブクラッシュ</strong></td>
+        <td>大量ミニオンを一気にタワーへ</td>
+        <td><span class="dot-good">● 非常に高い</span></td>
+        <td><span class="dot-bad">● 一時的に低い</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box fade-in">
+    <strong>⚠ 初心者がやりがちなミス</strong>
+    「とりあえずCSを取る」だけでウェーブをコントロールしていない状態。ミニオンがどちらに流れているかを意識するだけで、判断の質が大幅に上がる。
+  </div>
+</div>
+</section>
+
+<!-- WAVES SECTION -->
+<div class="section-alt">
+<section id="waves">
+<div class="section-wrap">
+  <div class="section-label">Chapter 02</div>
+  <h2 class="section-title">全ウェーブの<span class="g">作り方と動き方</span></h2>
+  <div class="section-divider"></div>
+  <p class="lead">それぞれのウェーブ状態の作り方、使いどころ、注意点を図解つきで解説する。</p>
+
+  <div class="wave-grid">
+
+    <!-- SLOW PUSH -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally m-cannon"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="arrow-vis">→→</div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy"></div>
+        <div class="wave-vis-label">Slow Push</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--green);">スロープッシュ</div>
+        <div class="wave-en">Slow Push</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>味方ミニオンを少しずつ多くして、徐々にウェーブを前に進める。序盤はレーン側のミニオン（近接3体）だけを攻撃し、遠距離ミニオンには触れない。波が蓄積してきたらキャノンウェーブと合わせる。</p>
+        </div>
+        <ul class="action-list">
+          <li>大きいウェーブ（スーパーミニオン複数）が育ったタイミングでタワーに叩きつける</li>
+          <li>ウェーブが崩れるのと同時にリコール → アイテムを買って戻る</li>
+          <li>ダイブ圧力をかけるための準備としても使える</li>
+          <li>JGのガンクとタイミングを合わせると非常に強力</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          時間がかかるため、ローム中に敵がプッシュし返してタワーに当たるケースも。状況を見て切り替えること。
+        </div>
+      </div>
+    </div>
+
+    <!-- FREEZE -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-gap"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy m-cannon"></div>
+        <div class="wave-vis-label">Freeze</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--blue);">フリーズ</div>
+        <div class="wave-en">Freeze</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>ウェーブを自分のタワーから少し離れた場所（タワーの攻撃範囲ギリギリ外）に留め続ける。敵ミニオンが1〜2体多い状態を作り、自分のミニオンを「ちょうど相殺される」ようにラストヒットだけ取る。</p>
+        </div>
+        <ul class="action-list">
+          <li>敵が前に来ないとCSが取れない状況を作り出す</li>
+          <li>敵がCSを取ろうとした瞬間に攻撃・スキルを当てる（ハラス）</li>
+          <li>敵がリコールできない状況を強制できる</li>
+          <li>JGのカウンターガンクに注意しながら維持する</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          フリーズには精密なウェーブコントロールが必要。崩れると逆に自分がタワーに押し込まれる。敵に波を割られた瞬間すぐにファストプッシュに切り替える判断力が必要。
+        </div>
+      </div>
+    </div>
+
+    <!-- FAST PUSH -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally m-cannon"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="arrow-vis">→→→</div>
+        <div class="wave-vis-label">Fast Push</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--gold);">ファストプッシュ</div>
+        <div class="wave-en">Fast Push</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>全ミニオンを素早くクリアして、ウェーブを敵タワーに当てる。スキルをフルに使ってミニオンを一掃する。タワーに当たっている間に自分は自由に行動できる。</p>
+        </div>
+        <ul class="action-list">
+          <li>リコールしてアイテムを購入する前の準備として最適</li>
+          <li>Mid/ドラゴン方向へのローム前に使う</li>
+          <li>敵がリコールしたとき → タワーを折るチャンス</li>
+          <li>ヘラルドを使うタイミングと合わせると効果的</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          プッシュしすぎると敵JGのカウンターガンクに遭いやすい。プッシュ後はすぐに下がるか、ワードを刺してから動くこと。
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVE CRASH / BOUNCE -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally m-cannon"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="arrow-vis">💥</div>
+        <div class="wave-vis-label">Crash & Bounce</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--purple);">ウェーブクラッシュ</div>
+        <div class="wave-en">Wave Crash / Bouncing</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>スロープッシュで育てた大きいウェーブを一気に敵タワーに当てる（クラッシュ）。タワーがウェーブを処理している間、次のウェーブはバウンスして自分側に戻ってくる（バウンス）。</p>
+        </div>
+        <ul class="action-list">
+          <li>クラッシュ直後が最も自由に動けるタイミング</li>
+          <li>タワーがウェーブを処理する間にObjectへ動く</li>
+          <li>バウンスしたウェーブは「自然にフリーズしやすい状態」になる</li>
+          <li>テレポートと組み合わせて他レーンへの介入も可能</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          バウンス後のウェーブ管理を忘れると、敵に大ウェーブをぶつけられてタワーが折られる。クラッシュしたら次の行動を速やかに決める。
+        </div>
+      </div>
+    </div>
+
+    <!-- FREEZING AFTER GANK -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy m-cannon"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-enemy"></div>
+        <div class="m m-gap"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="wave-vis-label">Reset Freeze</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--red);">リセットフリーズ</div>
+        <div class="wave-en">Reset Freeze (after gank/kill)</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>キルやJGのガンク成功後、自分のミニオンが少なく敵ミニオンが多い状態が生まれる。このときあえてタワーに当てず、手前で止めてフリーズ状態を作る。</p>
+        </div>
+        <ul class="action-list">
+          <li>倒した敵がリコールから帰ってきてもCS取れない状況を継続する</li>
+          <li>リードをさらに広げる「スノーボール」の基礎テクニック</li>
+          <li>敵が割ろうとしたら → 積極的に攻撃してレーンを離れさせる</li>
+          <li>フリーズを維持しながらドラゴンなどのObjectタイマーを確認</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          リコールなどで離れなければならないときは、タワーに叩きつけてからリコールすること。フリーズ放棄は必ずタワーに当ててから。
+        </div>
+      </div>
+    </div>
+
+    <!-- TOWER DIVE SETUP -->
+    <div class="wave-card fade-in">
+      <div class="wave-vis">
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally m-cannon"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="m m-ally"></div>
+        <div class="arrow-vis">🏰</div>
+        <div class="wave-vis-label">Dive Setup</div>
+      </div>
+      <div class="wave-body">
+        <div class="wave-name" style="color:var(--ambessa-light);">ダイブセットアップ</div>
+        <div class="wave-en">Tower Dive Setup</div>
+        <div class="how-to">
+          <div class="how-to-label">作り方</div>
+          <p>スロープッシュで大ウェーブを育て、大量のミニオンをタワーに当てながら敵チャンピオンにダイブする。ミニオンがタワーの攻撃を受けてくれるため、ダイブのリスクが大幅に下がる。</p>
+        </div>
+        <ul class="action-list">
+          <li>ミニオンが6体以上タワーに当たっているとき → ダイブの安全度が高い</li>
+          <li>敵のHPが半分以下のタイミングに合わせて大ウェーブをぶつける</li>
+          <li>JGと合わせると成功率が格段に上がる</li>
+          <li>ダイブ後はファストプッシュでタワーのHPを削る</li>
+        </ul>
+        <div class="warn-inline">
+          <strong>注意</strong>
+          ミニオンが少ないのにタワーダイブするのはNG。タワーショットが全部自分に当たってデスする。必ず十分な数のミニオンが先にタワーに当たっていることを確認すること。
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /wave-grid -->
+</div>
+</section>
+</div>
+
+<!-- CHAMPS SECTION -->
+<section id="champs">
+<div class="section-wrap">
+  <div class="section-label">Chapter 03</div>
+  <h2 class="section-title">チャンプ別<span class="gold">ウェーブ活用例</span></h2>
+  <div class="section-divider"></div>
+  <p class="lead">同じウェーブでもチャンピオンによって目的が変わる。アンベッサとランブルを例に、具体的な動きを解説する。</p>
+
+  <div class="champ-section fade-in">
+    <div class="champ-tabs">
+      <button class="champ-tab ambessa active" onclick="switchTab('ambessa')">⚔ アンベッサ</button>
+      <button class="champ-tab rumble" onclick="switchTab('rumble')">🔥 ランブル</button>
+    </div>
+
+    <!-- AMBESSA PANEL -->
+    <div class="champ-panel active" id="panel-ambessa">
+      <div class="champ-header">
+        <div class="champ-icon ambessa">⚔</div>
+        <div class="champ-info">
+          <h3 class="ambessa-name">アンベッサ</h3>
+          <p class="champ-desc">近接・ファイター。高い1v1性能と機動力を持つ。ウェーブ管理よりも「フリーズしてハラス」「ダイブで圧殺」が得意なスタイル。</p>
+          <div class="champ-tags">
+            <span class="ctag ctag-orange">フリーズ得意</span>
+            <span class="ctag ctag-orange">ダイブ向き</span>
+            <span class="ctag ctag-green">1v1最強クラス</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>🎯 アンベッサのウェーブ方針</strong>
+        アンベッサはスキルでウェーブを一掃する能力が低い。そのため大ウェーブを一気に作るよりも、「フリーズして敵を引っ張り出す」→「倒す」→「スノーボール」のサイクルが基本戦略になる。
+      </div>
+
+      <div class="wave-examples">
+        <div class="ex-card">
+          <div class="ex-head ambessa">フリーズ → ハラス → キル</div>
+          <div class="ex-body ambessa">
+            <div class="ex-scenario">序盤〜中盤：1v1で勝てる状況</div>
+            <ul>
+              <li>ウェーブをタワー前でフリーズ状態に保つ</li>
+              <li>敵がCSを取ろうと前に出た瞬間にWで踏み込みハラス</li>
+              <li>敵HPが50%を切ったらEで距離を詰めてフルコンボ</li>
+              <li>倒したらリセットフリーズをセット → スノーボール継続</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head ambessa">スロープッシュ → ダイブ</div>
+          <div class="ex-body ambessa">
+            <div class="ex-scenario">リードがあるとき・JGと合わせるとき</div>
+            <ul>
+              <li>キャノンウェーブを使ってゆっくりウェーブを育てる</li>
+              <li>大ウェーブが敵タワーに当たり始めたタイミングで前に出る</li>
+              <li>Eの機動力でタワーをかいくぐりながらキルを狙う</li>
+              <li>ダイブ後はW→Eで即撤退、タワーショットを最小限に</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head ambessa">ファストプッシュ → ローム</div>
+          <div class="ex-body ambessa">
+            <div class="ex-scenario">敵がリコール中・Mid/ドラゴンが熱いとき</div>
+            <ul>
+              <li>敵がB（リコール）したら全スキルでウェーブを一掃</li>
+              <li>タワーに当てたままMidへローム</li>
+              <li>Midでキルを取ったらドラゴン or Topに戻る判断</li>
+              <li>アンベッサの機動力でロームから帰還がしやすい</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head ambessa">フリーズ解除のタイミング</div>
+          <div class="ex-body ambessa">
+            <div class="ex-scenario">JGのガンクが来たとき・ObjectTimerが迫るとき</div>
+            <ul>
+              <li>JGが来てキルが取れたら → フリーズ継続 or ダイブへ移行</li>
+              <li>ドラゴンが2分以内に沸く → ファストプッシュしてMidへ合流</li>
+              <li>自分が死んだ後 → 帰還後すぐにウェーブ状況を確認してリセット</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-box" style="margin-top:1.5rem;">
+        <strong>⚠ アンベッサ 初心者の罠</strong>
+        「強いから突っ込む」だけでウェーブを管理しないパターン。ウェーブが敵側に流れているとダイブしても逃げられ、さらにJGのカウンターガンクで返り討ちになる。必ずウェーブ状態を確認してから動くこと。
+      </div>
+    </div>
+
+    <!-- RUMBLE PANEL -->
+    <div class="champ-panel" id="panel-rumble">
+      <div class="champ-header">
+        <div class="champ-icon rumble">🔥</div>
+        <div class="champ-info">
+          <h3 class="rumble-name">ランブル</h3>
+          <p class="champ-desc">近接・メイジ。強力なAoEスキルでウェーブをまとめて処理できる。ファストプッシュ→ローム、またはフリーズ→ハラスの両方が得意。</p>
+          <div class="champ-tags">
+            <span class="ctag ctag-yellow">ファストプッシュ得意</span>
+            <span class="ctag ctag-yellow">ローム向き</span>
+            <span class="ctag ctag-green">ハラス強力</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box" style="border-color:rgba(232,192,48,0.3);background:rgba(232,192,48,0.05);">
+        <strong style="color:var(--rumble-light);">🎯 ランブルのウェーブ方針</strong>
+        ランブルはQのフレイムスロワーでウェーブを素早くクリアできる。ファストプッシュからローム → Mid合流 → ドラゴン というパターンが特に強力。序盤はフリーズとハラスで体力差をつけてから一気に倒す。
+      </div>
+
+      <div class="wave-examples">
+        <div class="ex-card">
+          <div class="ex-head rumble">ファストプッシュ → Mid合流</div>
+          <div class="ex-body rumble">
+            <div class="ex-scenario">中盤・ドラゴンタイマーが近いとき</div>
+            <ul>
+              <li>Qフレイムスロワー＋通常攻撃でウェーブを素早くクリア</li>
+              <li>タワーに当ててからMidへローム</li>
+              <li>RのエクアライザーでMidのファイトに参加</li>
+              <li>ファイト後すぐドラゴン or Topに帰還</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head rumble">フリーズ → ハラス → キル</div>
+          <div class="ex-body rumble">
+            <div class="ex-scenario">序盤：敵に体力差をつけたいとき</div>
+            <ul>
+              <li>フリーズ状態を作って敵を引っ張り出す</li>
+              <li>Q（フレイムスロワー）を敵チャンプに直接当ててハラス</li>
+              <li>オーバーヒート（50〜100ゲージ）に入れながら通常攻撃も重ねる</li>
+              <li>敵HPが半分を切ったらEシールドしてW+Q+通常でフルコンボ</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head rumble">スロープッシュ → ウェーブクラッシュ</div>
+          <div class="ex-body rumble">
+            <div class="ex-scenario">キャノンウェーブを使って大ウェーブを作るとき</div>
+            <ul>
+              <li>遠距離ミニオンを触らず近接だけ倒してウェーブを育てる</li>
+              <li>キャノンウェーブと合わせた大ウェーブをQでまとめてクラッシュ</li>
+              <li>クラッシュ後にタワープレートを削りながら次の行動を選ぶ</li>
+              <li>バウンスしたウェーブをフリーズに切り替えてハラス再開</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-head rumble">ダイブセットアップ (JGと)</div>
+          <div class="ex-body rumble">
+            <div class="ex-scenario">JGとコミュニケーションが取れているとき</div>
+            <ul>
+              <li>スロープッシュで大ウェーブを育ててJGを呼ぶ</li>
+              <li>ミニオンがタワーに当たったタイミングでJGと一緒に前に出る</li>
+              <li>W（スクラップシールド）でタワーショット軽減しながらダイブ</li>
+              <li>Rエクアライザーを敵の退路に置いてキルを確定させる</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-box" style="margin-top:1.5rem;">
+        <strong>⚠ ランブル 初心者の罠</strong>
+        スキルのオーバーヒートを意図せず起こしてしまうパターン。ゲージが100になると沈黙になり、スキルが一切使えなくなる。ウェーブクリア中にゲージを使いすぎてファイトで動けなくなることがある。ゲージ管理とウェーブ管理を同時に意識しよう。
+      </div>
+    </div>
+
+  </div><!-- /champ-section -->
+</div>
+</section>
+
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Top<span>Wave</span></div>
+  <p>League of Legends · TOPレーン ウェーブ管理ガイド</p>
+  <p style="margin-top:0.3rem;color:#2a3a2a;">※ 非公式ガイドです。Riot Games公式とは無関係です。</p>
+</footer>
+
+<script>
+  function jumpTo(id) {
+    const el = document.querySelector(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function switchTab(champ) {
+    document.querySelectorAll('.champ-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.champ-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.champ-tab.' + champ).classList.add('active');
+    document.getElementById('panel-' + champ).classList.add('active');
+  }
+
+  // SCROLL FADE IN
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  fadeEls.forEach(el => obs.observe(el));
+
+  // BACK TO TOP
+  const backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('visible', window.scrollY > 300);
+  });
+</script>
+</body>
+</html>
